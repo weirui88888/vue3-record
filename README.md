@@ -49,3 +49,53 @@ onMounted(() => {
 })
 </script>
 ```
+
+## 2.关于定义组件prop的两种方式
+
+### 2.1 通过vue2那种熟悉的方式
+
+```javascript
+<script>
+  // defineProps和defineEmits都不需要手动引入
+  const props = defineProps({
+    name: {
+      type: String,
+      default: '化氏一味'
+    },
+    show: {
+      type: Boolean,
+      default: false
+    }
+})
+</script>
+```
+
+### 2.2 通过ts泛型参数定义类型
+
+```javascript
+<script>
+  const props = defineProps<{
+    name: string
+    show: boolean
+    labels?: Record<string,any>[]
+}>()
+</script>
+```
+
+但是通过这种方式定义prop会有一个问题，那就是没法给prop属性添加默认值，所以还需要配合`withDefaults`使用
+
+```javascript
+<script>
+  interface Props {
+    name: string
+    show: boolean
+    labels?: Record<string,any>[]
+  }
+  const props = withDefaults(defineProps<Props>(), {
+    name: '化氏一味',
+    show: false
+  })
+</script>
+```
+
+上述两种方式，目前还不清楚孰优孰劣，具体的还是要看个人喜好。当然为了使代码风格趋于统一，还是选择固定的一种模式比较稳妥。
